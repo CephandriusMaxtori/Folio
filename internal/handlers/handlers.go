@@ -63,13 +63,16 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 	})
 
 	r.Route("/opds", func(r chi.Router) {
-		r.Get("/{apiKey}", h.OPDSCatalog)
-		r.Get("/{apiKey}/libraries", h.OPDSLibraries)
-		r.Get("/{apiKey}/library/{libraryId}", h.OPDSLibrary)
-		r.Get("/{apiKey}/series/{seriesId}", h.OPDSSeries)
-		r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}", h.OPDSVolume)
-		r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}/chapter/{chapterId}", h.OPDSChapter)
-		r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}/chapter/{chapterId}/download/{filename}", h.OPDSDownload)
+		r.Group(func(r chi.Router) {
+			r.Use(h.OPDSAuthMiddleware)
+			r.Get("/{apiKey}", h.OPDSCatalog)
+			r.Get("/{apiKey}/libraries", h.OPDSLibraries)
+			r.Get("/{apiKey}/library/{libraryId}", h.OPDSLibrary)
+			r.Get("/{apiKey}/series/{seriesId}", h.OPDSSeries)
+			r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}", h.OPDSVolume)
+			r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}/chapter/{chapterId}", h.OPDSChapter)
+			r.Get("/{apiKey}/series/{seriesId}/volume/{volumeId}/chapter/{chapterId}/download/{filename}", h.OPDSDownload)
+		})
 		r.Get("/search/{apiKey}", h.OPDSSearchDescriptor)
 	})
 }
