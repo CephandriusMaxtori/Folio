@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -57,6 +58,16 @@ func Load(path string) (*Config, error) {
 		if err := yaml.Unmarshal(data, cfg); err != nil {
 			return nil, err
 		}
+	}
+
+	if v := os.Getenv("FOLIO_PORT"); v != "" {
+		fmt.Sscanf(v, "%d", &cfg.Port)
+	}
+	if v := os.Getenv("FOLIO_DB_PATH"); v != "" {
+		cfg.Database.Path = v
+	}
+	if v := os.Getenv("FOLIO_JWT_SECRET"); v != "" {
+		cfg.JWT.Secret = v
 	}
 
 	dir := filepath.Dir(cfg.Database.Path)
