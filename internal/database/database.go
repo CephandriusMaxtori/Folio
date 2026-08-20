@@ -1,13 +1,14 @@
 package database
 
 import (
-	"github.com/glebarez/sqlite"
+	"github.com/CephandriusMaxtori/Folio/internal/models"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func Open(path string) (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(path+"?_journal_mode=WAL&_busy_timeout=5000&_foreign_keys=ON"), &gorm.Config{
+func Open(dsn string) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
@@ -19,12 +20,27 @@ func Open(path string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	sqlDB.SetMaxOpenConns(4)
-	sqlDB.SetMaxIdleConns(2)
+	sqlDB.SetMaxOpenConns(20)
+	sqlDB.SetMaxIdleConns(5)
 
 	return db, nil
 }
 
 func Migrate(db *gorm.DB) error {
-	return db.Exec("PRAGMA temp_store = MEMORY").Error
+	return db.AutoMigrate(
+		&models.User{},
+		&models.Library{},
+		&models.Series{},
+		&models.Volume{},
+		&models.Chapter{},
+		&models.ReadingProgress{},
+		&models.Bookmark{},
+		&models.Collection{},
+		&models.CollectionItem{},
+		&models.ReadingList{},
+		&models.ReadingListItem{},
+		&models.Annotation{},
+		&models.Settings{},
+		&models.APIKey{},
+	)
 }

@@ -8,7 +8,7 @@ No CGo dependencies. Single binary deployment.
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | HTTP Router | `github.com/go-chi/chi/v5` | Lightweight, stdlib-compatible |
-| Database | `modernc.org/sqlite` via `gorm.io/driver/sqlite` | Pure Go SQLite, no C toolchain |
+| Database | `gorm.io/driver/postgres` via `gorm.io/gorm` | PostgreSQL, production-ready |
 | ORM | `gorm.io/gorm` | Auto-migrations, clean models |
 | ZIP/CBZ | `archive/zip` (stdlib) | Zero dependencies |
 | RAR/CBR | `github.com/nwaples/rardecode/v2` | Pure Go RAR decoder |

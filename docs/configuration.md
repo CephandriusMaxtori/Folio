@@ -13,7 +13,7 @@ Folio uses a `config.yaml` file. It looks for it in the working directory.
 port: 8080
 
 database:
-  path: ./data/folio.db
+  dsn: "postgres://folio:folio@localhost:5432/folio?sslmode=disable"
 
 jwt_secret: change-me-in-production
 
@@ -31,16 +31,31 @@ All config values can be set via environment variables:
 | Variable | Config Key | Default |
 |----------|-----------|---------|
 | `FOLIO_PORT` | `port` | `8080` |
-| `FOLIO_DB_PATH` | `database.path` | `./data/folio.db` |
+| `FOLIO_DB_DSN` | `database.dsn` | `postgres://folio:folio@localhost:5432/folio?sslmode=disable` |
 | `FOLIO_JWT_SECRET` | `jwt_secret` | `change-me-in-production` |
 
 ## Database
 
-Folio uses SQLite with WAL mode. The database file is created automatically.
+Folio uses PostgreSQL. You need a running PostgreSQL instance.
 
-**Backup**: Copy `data/folio.db` to back up your library index, reading progress, and user accounts. The actual book files are not modified.
+### Quick setup with Docker
 
-**WAL mode** allows concurrent reads while writing, which is important for the background scanner.
+```bash
+docker run -d --name folio-pg \
+  -e POSTGRES_USER=folio \
+  -e POSTGRES_PASSWORD=folio \
+  -e POSTGRES_DB=folio \
+  -p 5432:5432 \
+  postgres:16-alpine
+```
+
+Then start Folio with:
+
+```bash
+FOLIO_DB_DSN="postgres://folio:folio@localhost:5432/folio?sslmode=disable" ./folio
+```
+
+Tables are created automatically on first run via GORM AutoMigrate.
 
 ## Supported Formats
 

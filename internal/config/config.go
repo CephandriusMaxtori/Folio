@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type Database struct {
-	Path string `yaml:"path"`
+	DSN string `yaml:"dsn"`
 }
 
 type JWTConfig struct {
@@ -32,7 +32,7 @@ func Load(path string) (*Config, error) {
 	cfg := &Config{
 		Port: 8080,
 		Database: Database{
-			Path: "./data/folio.db",
+			DSN: "postgres://folio:folio@localhost:5432/folio?sslmode=disable",
 		},
 		JWT: JWTConfig{
 			Secret:     "change-me-in-production",
@@ -63,14 +63,17 @@ func Load(path string) (*Config, error) {
 	if v := os.Getenv("FOLIO_PORT"); v != "" {
 		fmt.Sscanf(v, "%d", &cfg.Port)
 	}
+	if v := os.Getenv("FOLIO_DB_DSN"); v != "" {
+		cfg.Database.DSN = v
+	}
 	if v := os.Getenv("FOLIO_DB_PATH"); v != "" {
-		cfg.Database.Path = v
+		cfg.Database.DSN = v
 	}
 	if v := os.Getenv("FOLIO_JWT_SECRET"); v != "" {
 		cfg.JWT.Secret = v
 	}
 
-	dir := filepath.Dir(cfg.Database.Path)
+	dir := filepath.Dir(cfg.Database.DSN)
 	if dir != "" && dir != "." {
 		os.MkdirAll(dir, 0755)
 	}

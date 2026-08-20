@@ -44,12 +44,12 @@ make build-arm64
 
 ## Configuration
 
-Folio looks for `config.yaml` in the working directory or `./config/`.
+Folio uses PostgreSQL for data storage.
 
 ```yaml
 port: 8080
 database:
-  path: ./data/folio.db
+  dsn: "postgres://folio:folio@localhost:5432/folio?sslmode=disable"
 jwt_secret: change-me-in-production
 library:
   paths:
@@ -61,7 +61,7 @@ Or use environment variables:
 
 ```bash
 FOLIO_PORT=3000
-FOLIO_DB_PATH=./data/folio.db
+FOLIO_DB_DSN="postgres://user:pass@localhost:5432/folio?sslmode=disable"
 FOLIO_JWT_SECRET=your-secret
 ```
 
