@@ -1,5 +1,7 @@
 # Folio
 
+> **WIP** — This project is under active development and is not yet feature-complete.
+
 A self-hosted digital library server for manga, comics, and ebooks. Optimized for Raspberry Pi.
 
 Built with Go. No CGo dependencies. Single binary deployment.

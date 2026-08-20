@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type User struct {
 	ID           uint      `gorm:"primaryKey" json:"id"`
@@ -20,6 +23,27 @@ type Library struct {
 	FolderWatch  bool      `gorm:"default:false" json:"folder_watching"`
 	CreatedAt    time.Time `json:"created_at"`
 	Folders      []string  `gorm:"-" json:"folder_paths"`
+}
+
+func (l *Library) GetFolders() []string {
+	if l.Folders != nil {
+		return l.Folders
+	}
+	if l.FolderPaths == "" {
+		return []string{}
+	}
+	var folders []string
+	if err := json.Unmarshal([]byte(l.FolderPaths), &folders); err != nil {
+		return []string{l.FolderPaths}
+	}
+	l.Folders = folders
+	return folders
+}
+
+func (l *Library) SetFolders(paths []string) {
+	l.Folders = paths
+	data, _ := json.Marshal(paths)
+	l.FolderPaths = string(data)
 }
 
 type Series struct {

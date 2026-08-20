@@ -48,6 +48,7 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 			})
 
 			r.Get("/search", h.Search)
+			r.Post("/import", h.ImportBook)
 			r.Get("/settings", h.GetSettings)
 			r.Put("/settings", h.UpdateSettings)
 			r.Get("/admin/stats", h.Stats)
@@ -211,4 +212,35 @@ func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, stats)
+}
+
+func (h *Handler) ImportBook(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseMultipartForm(32 << 20); err != nil {
+		writeError(w, 400, "invalid multipart form")
+		return
+	}
+
+	libraryID, _ := strconv.ParseUint(r.FormValue("library_id"), 10, 32)
+	seriesName := r.FormValue("series_name")
+	if seriesName == "" {
+		seriesName = "Imported"
+	}
+
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		writeError(w, 400, "file required")
+		return
+	}
+	defer file.Close()
+
+	if err := h.svc.ImportFile(uint(libraryID), seriesName, header.Filename, file); err != nil {
+		writeError(w, 500, err.Error())
+		return
+	}
+
+	writeJSON(w, 201, map[string]string{
+		"status":  "imported",
+		"filename": header.Filename,
+		"series":   seriesName,
+	})
 }

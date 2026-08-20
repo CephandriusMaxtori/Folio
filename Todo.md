@@ -159,14 +159,14 @@ Requirements:
 ## Implementation Steps
 
 - [x] Step 1: Project init - go.mod, Makefile, README, .gitignore
-- [ ] Step 2: Config & DB - SQLite WAL, GORM, auto-migrate
-- [ ] Step 3: Models - all GORM model definitions
-- [ ] Step 4: Auth - JWT, bcrypt, login/register, middleware
-- [ ] Step 5: Library CRUD
-- [ ] Step 6: Scanner - library scanning engine
-- [ ] Step 7: Archive readers - CBZ/CBR/CB7
-- [ ] Step 8: EPUB reader
-- [ ] Step 9: Cover service
+- [x] Step 2: Config & DB - SQLite WAL, GORM, auto-migrate
+- [x] Step 3: Models - all GORM model definitions
+- [x] Step 4: Auth - JWT, bcrypt, login/register, middleware
+- [x] Step 5: Library CRUD
+- [x] Step 6: Scanner - library scanning engine
+- [x] Step 7: Archive readers - CBZ/CBR
+- [x] Step 8: EPUB reader
+- [x] Step 9: Cover service
 - [ ] Step 10: Reader API - pages, progress, on-deck
 - [ ] Step 11: OPDS feeds - full OPDS 1.2 XML
 - [ ] Step 12: Search
