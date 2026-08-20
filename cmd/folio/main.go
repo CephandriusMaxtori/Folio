@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -60,7 +61,8 @@ func main() {
 
 	h.RegisterRoutes(r)
 
-	r.Handle("/*", http.FileServer(http.FS(Folio.WebFiles)))
+	webSub, _ := fs.Sub(Folio.WebFiles, "web")
+	r.Handle("/*", http.FileServer(http.FS(webSub)))
 
 	addr := fmt.Sprintf(":%d", cfg.Port)
 	log.Printf("Folio %s starting on %s", version, addr)
