@@ -167,7 +167,7 @@ Requirements:
 - [x] Step 7: Archive readers - CBZ/CBR
 - [x] Step 8: EPUB reader
 - [x] Step 9: Cover service
-- [ ] Step 10: Reader API - pages, progress, on-deck
+- [x] Step 10: Reader API - pages, progress, on-deck
 - [ ] Step 11: OPDS feeds - full OPDS 1.2 XML
 - [ ] Step 12: Search
 - [ ] Step 13: Collections & reading lists

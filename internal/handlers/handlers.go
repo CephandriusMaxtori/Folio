@@ -39,12 +39,19 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 
 			r.Get("/series", h.ListSeries)
 			r.Get("/series/{id}", h.GetSeries)
+			r.Get("/series/{id}/volumes", h.GetSeriesVolumes)
 
 			r.Route("/reader", func(r chi.Router) {
 				r.Get("/chapter/{id}/pages", h.GetChapterPages)
 				r.Get("/chapter/{id}/page/{num}", h.GetPage)
 				r.Post("/progress", h.SaveProgress)
 				r.Get("/on-deck", h.OnDeck)
+			})
+
+			r.Route("/image", func(r chi.Router) {
+				r.Get("/series-cover", h.SeriesCover)
+				r.Get("/volume-cover", h.VolumeCover)
+				r.Get("/chapter-cover", h.ChapterCover)
 			})
 
 			r.Get("/search", h.Search)
@@ -96,6 +103,10 @@ func queryStr(r *http.Request, name string) string {
 	return r.URL.Query().Get(name)
 }
 
+func readJSON(r *http.Request, v interface{}) error {
+	return json.NewDecoder(r.Body).Decode(v)
+}
+
 func (h *Handler) ListLibraries(w http.ResponseWriter, r *http.Request) {
 	libs, err := h.svc.ListLibraries()
 	if err != nil {
@@ -145,10 +156,6 @@ func (h *Handler) DeleteLibrary(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]string{"status": "deleted"})
 }
 
-func (h *Handler) ScanLibrary(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 202, map[string]string{"status": "scan started"})
-}
-
 func (h *Handler) ListSeries(w http.ResponseWriter, r *http.Request) {
 	libID := uint(queryInt(r, "library_id", 0))
 	sort := queryStr(r, "sort")
@@ -168,22 +175,6 @@ func (h *Handler) GetSeries(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, ser)
-}
-
-func (h *Handler) GetChapterPages(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]int{"pages": 0})
-}
-
-func (h *Handler) GetPage(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "not implemented", 501)
-}
-
-func (h *Handler) SaveProgress(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]string{"status": "ok"})
-}
-
-func (h *Handler) OnDeck(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, []interface{}{})
 }
 
 func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
