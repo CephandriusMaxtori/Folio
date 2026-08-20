@@ -179,6 +179,11 @@ func (s *Service) GetAPIKey(key string) (*models.APIKey, error) {
 	return &k, err
 }
 func (s *Service) DeleteAPIKey(id uint) error { return s.db.Delete(&models.APIKey{}, id).Error }
+func (s *Service) ListAPIKeys(userID uint) ([]models.APIKey, error) {
+	var keys []models.APIKey
+	err := s.db.Where("user_id = ?", userID).Find(&keys).Error
+	return keys, err
+}
 
 // Stats
 func (s *Service) GetStats() (map[string]int64, error) {

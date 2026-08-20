@@ -29,7 +29,7 @@ func (h *Handler) GetChapterPages(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetPage(w http.ResponseWriter, r *http.Request) {
 	chID := uintParam(r, "id")
-	num := queryInt(r, "num", 0)
+	num := uintParam(r, "num")
 
 	ch, err := h.svc.GetChapter(chID)
 	if err != nil {
@@ -37,11 +37,13 @@ func (h *Handler) GetPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	n := int(num)
+
 	switch ch.FileType {
 	case "cbz", "zip", "cbr", "rar":
-		h.serveArchivePage(w, r, ch, num)
+		h.serveArchivePage(w, r, ch, n)
 	case "epub":
-		h.serveEpubPage(w, r, ch, num)
+		h.serveEpubPage(w, r, ch, n)
 	default:
 		writeError(w, 400, "unsupported file type")
 	}

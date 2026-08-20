@@ -28,6 +28,9 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			r.Use(h.AuthMiddleware)
 			r.Get("/auth/me", h.Me)
+			r.Get("/auth/apikeys", h.ListAPIKeys)
+			r.Post("/auth/apikeys", h.CreateAPIKey)
+			r.Delete("/auth/apikeys/{id}", h.DeleteAPIKey)
 
 			r.Route("/libraries", func(r chi.Router) {
 				r.Get("/", h.ListLibraries)
@@ -127,6 +130,7 @@ func queryStr(r *http.Request, name string) string {
 }
 
 func readJSON(r *http.Request, v interface{}) error {
+	defer r.Body.Close()
 	return json.NewDecoder(r.Body).Decode(v)
 }
 

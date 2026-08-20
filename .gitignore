@@ -1,5 +1,6 @@
 # Binaries
 folio
+folio-*
 *.exe
 *.dll
 *.so

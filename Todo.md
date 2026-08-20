@@ -174,5 +174,5 @@ Requirements:
 - [x] Step 14: Annotations
 - [x] Step 15: Admin
 - [x] Step 16: Settings
-- [ ] Step 17: Frontend SPA
-- [ ] Step 18: Final polish - error handling, logging, Docker multi-arch
+- [x] Step 17: Frontend SPA
+- [x] Step 18: Final polish - logging, error handling, API keys, docs

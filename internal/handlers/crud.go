@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"net/http"
 
 	"github.com/CephandriusMaxtori/Folio/internal/models"
@@ -175,4 +177,55 @@ func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, stats)
+}
+
+func (h *Handler) ListAPIKeys(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(*models.User)
+	keys, err := h.svc.ListAPIKeys(user.ID)
+	if err != nil {
+		writeError(w, 500, err.Error())
+		return
+	}
+	writeJSON(w, 200, keys)
+}
+
+func (h *Handler) CreateAPIKey(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value("user").(*models.User)
+	var req struct {
+		Name string `json:"name"`
+	}
+	if err := readJSON(r, &req); err != nil {
+		writeError(w, 400, "invalid request")
+		return
+	}
+	if req.Name == "" {
+		req.Name = "API Key"
+	}
+
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		writeError(w, 500, "failed to generate key")
+		return
+	}
+	keyStr := hex.EncodeToString(b)
+
+	key := &models.APIKey{
+		UserID: user.ID,
+		Key:    keyStr,
+		Name:   req.Name,
+	}
+	if err := h.svc.CreateAPIKey(key); err != nil {
+		writeError(w, 500, err.Error())
+		return
+	}
+	writeJSON(w, 201, key)
+}
+
+func (h *Handler) DeleteAPIKey(w http.ResponseWriter, r *http.Request) {
+	id := uintParam(r, "id")
+	if err := h.svc.DeleteAPIKey(id); err != nil {
+		writeError(w, 500, err.Error())
+		return
+	}
+	writeJSON(w, 200, map[string]string{"status": "deleted"})
 }
