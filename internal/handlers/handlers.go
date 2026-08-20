@@ -56,6 +56,26 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 
 			r.Get("/search", h.Search)
 			r.Post("/import", h.ImportBook)
+
+			r.Route("/collections", func(r chi.Router) {
+				r.Get("/", h.ListCollections)
+				r.Post("/", h.CreateCollection)
+				r.Post("/{id}/series", h.AddToCollection)
+			})
+
+			r.Route("/reading-lists", func(r chi.Router) {
+				r.Get("/", h.ListReadingLists)
+				r.Post("/", h.CreateReadingList)
+				r.Post("/{id}/chapters", h.AddToReadingList)
+			})
+
+			r.Route("/annotations", func(r chi.Router) {
+				r.Get("/", h.ListAnnotations)
+				r.Post("/", h.CreateAnnotation)
+				r.Put("/{id}", h.UpdateAnnotation)
+				r.Delete("/{id}", h.DeleteAnnotation)
+			})
+
 			r.Get("/settings", h.GetSettings)
 			r.Put("/settings", h.UpdateSettings)
 			r.Get("/admin/stats", h.Stats)
@@ -189,23 +209,6 @@ func (h *Handler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, series)
-}
-
-func (h *Handler) GetSettings(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]string{"theme": "dark"})
-}
-
-func (h *Handler) UpdateSettings(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, 200, map[string]string{"status": "ok"})
-}
-
-func (h *Handler) Stats(w http.ResponseWriter, r *http.Request) {
-	stats, err := h.svc.GetStats()
-	if err != nil {
-		writeError(w, 500, err.Error())
-		return
-	}
-	writeJSON(w, 200, stats)
 }
 
 func (h *Handler) ImportBook(w http.ResponseWriter, r *http.Request) {

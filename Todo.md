@@ -169,10 +169,10 @@ Requirements:
 - [x] Step 9: Cover service
 - [x] Step 10: Reader API - pages, progress, on-deck
 - [x] Step 11: OPDS feeds - full OPDS 1.2 XML
-- [ ] Step 12: Search
-- [ ] Step 13: Collections & reading lists
-- [ ] Step 14: Annotations
-- [ ] Step 15: Admin
-- [ ] Step 16: Settings
+- [x] Step 12: Search
+- [x] Step 13: Collections & reading lists
+- [x] Step 14: Annotations
+- [x] Step 15: Admin
+- [x] Step 16: Settings
 - [ ] Step 17: Frontend SPA
 - [ ] Step 18: Final polish - error handling, logging, Docker multi-arch
